@@ -1,28 +1,34 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const Listing = require('./models/listing.js');
+const path = require('path');
 
 const app = express();
 
+const MONGO_URL = 'mongodb://localhost:27017/wanderlust';
+
+main().then(() => {
+  console.log('Connected to MongoDB');
+}).catch(err => {
+  console.log('Error connecting to MongoDB:', err);
+})
+
+async function main() {
+  await mongoose.connect(MONGO_URL)
+}
 
 app.get('/', (req, res) => {
   res.send("Hi, I am root")
 });
 
-app.get('/testListing', async (req, res) => {
-  let sampleListing = new Listing({
-    title: 'Test Listing',
-    description: 'This is a test listing',
-    image: '',
-    price: 100,
-    location: 'New York',
-    country: 'USA'
-  });
-
-  await sampleListing.save()
-  console.log('Sample listing saved:', sampleListing);
-  res.send('Sample listing saved');
-});
+app.get('/listings', async (req, res) => {
+    try {
+       const allListings = await Listing.find();
+       res.render("index.ejs", {allListings})
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+})
 
 
 app.listen(8080, () => {
