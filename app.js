@@ -23,8 +23,8 @@ app.get('/', (req, res) => {
 
 app.get('/listings', async (req, res) => {
     try {
-       const allListings = await Listing.find();
-       res.render("index.ejs", {allListings})
+      const allListings = await Listing.find();
+      res.render("index.ejs", {allListings})
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
