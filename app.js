@@ -17,6 +17,9 @@ async function main() {
   await mongoose.connect(MONGO_URL)
 }
 
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
 app.get('/', (req, res) => {
   res.send("Hi, I am root")
 });
@@ -24,9 +27,9 @@ app.get('/', (req, res) => {
 app.get('/listings', async (req, res) => {
     try {
       const allListings = await Listing.find();
-      res.render("index.ejs", {allListings})
+      res.render("listings/index.ejs", {allListings})
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: error.message })
     }
 })
 
